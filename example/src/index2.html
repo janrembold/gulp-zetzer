@@ -1,0 +1,11 @@
+{
+"title": "Title of index2.html",
+"description": "Some other description",
+"template": "default.html"
+}
+
+
+{{# partial = {} }}
+
+{{## def.content: {{= it.include("partial.html") }} #}}
+{{# partial.content = def.content }}

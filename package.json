@@ -1,0 +1,36 @@
+{
+  "name": "gulp-zetzer",
+  "version": "0.0.0",
+  "description": "My <%= superb %> gulp plugin",
+  "license": "MIT",
+  "repository": "janrembold/gulp-zetzer",
+  "author": {
+    "name": "<%= name %>",
+    "email": "<%= email %>",
+    "url": "<%= humanizedWebsite %>"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "gulp",
+    "zetzer",
+    "stencil"
+  ],
+  "dependencies": {
+    "gulp-util": "^3.0.4",
+    "lodash": "^3.10.1",
+    "through2": "^0.6.5",
+    "underscore": "^1.8.3",
+    "zetzer": "^2.0.0"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
