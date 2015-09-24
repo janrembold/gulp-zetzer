@@ -42,10 +42,8 @@ gulp.task('zetzer', function(){
 
 All possible options are listed in the main [Zetzer][zetzer] project.
 
-Actual features should be implemented in [zetzer] as this is just
-Grunt "front-end".
-
-[zetzer]: https://github.com/brainshave/zetzer
+New features should be implemented in [Zetzer][zetzer]. This is just a Gulp "front-end".
+[Zetzer][zetzer]: https://github.com/brainshave/zetzer
 
 
 ## License
