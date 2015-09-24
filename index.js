@@ -4,7 +4,7 @@ var PLUGIN_NAME = 'gulp-zetzer';
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
 var through = require('through2');
-var _ = require('underscore');
+//var _ = require('underscore');
 var fs = require('fs');
 
 var parse_setup = require('zetzer/parse');
@@ -17,13 +17,31 @@ module.exports = function (opts) {
         throw new PluginError(PLUGIN_NAME, 'Missing options!');
     }
 
-    var options = _.extend({
+    Object.prototype.extend = function (obj) {
+        for (var i in obj) {
+            if (obj.hasOwnProperty(i)) {
+                this[i] = obj[i];
+            }
+        }
+    };
+
+    var options = {
         partials: '.',
         templates: '.',
         env: {},
         dot_template_settings: {},
         meta_data_separator: /\r?\n\r?\n/
-    }, opts);
+    };
+
+    options.extend(opts);
+
+    //var options = _.extend({
+    //    partials: '.',
+    //    templates: '.',
+    //    env: {},
+    //    dot_template_settings: {},
+    //    meta_data_separator: /\r?\n\r?\n/
+    //}, opts);
 
     var parse = parse_setup(options.meta_data_separator);
 
