@@ -1,6 +1,6 @@
 # gulp-zetzer
 
-> Gulp plugin for [Zetzer][zetzer] - static HTML page generator
+> Gulp plugin for [zetzer] - static HTML page generator
 
 ## Install
 
@@ -40,10 +40,10 @@ gulp.task('zetzer', function(){
 });
 ```
 
-All possible options are listed in the main [Zetzer][zetzer] project.
+All possible options are listed in the main [zetzer] project.
 
-New features should be implemented in [Zetzer][zetzer]. This is just a Gulp "front-end".
-[Zetzer][zetzer]: https://github.com/brainshave/zetzer
+New features should be implemented in [zetzer]. This is just a Gulp "front-end".
+[zetzer]: https://github.com/brainshave/zetzer
 
 
 ## License
