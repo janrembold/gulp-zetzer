@@ -1,0 +1,9 @@
+<head>
+	<title>{{= it.document.title || "Default title"}}</title>
+	<meta name="description" content="{{= it.document.description || ""}}">
+</head>
+<body>
+	{{= it.include("demo2.html") }}
+	{{# partial.content }}
+</body>
+</html>
