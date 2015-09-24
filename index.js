@@ -1,21 +1,33 @@
 'use strict';
 
 var PLUGIN_NAME = 'gulp-zetzer';
-var gutil = require('gulp-util');
-var PluginError = gutil.PluginError;
-var through = require('through2');
-//var _ = require('underscore');
-var fs = require('fs');
 
-var parse_setup = require('zetzer/parse');
-var compilers_setup = require('zetzer/compilers');
-var process_file_setup = require('zetzer/process');
+var fs          = require('fs');
+var gutil       = require('gulp-util');
+var through     = require('through2');
+var getFileSize = require("filesize");
+var PluginError = gutil.PluginError;
+
+var ZetzerParse     = require('zetzer/parse');
+var ZetzerCompilers = require('zetzer/compilers');
+var ZetzerProcess   = require('zetzer/process');
 
 
 module.exports = function (opts) {
     if (!opts) {
         throw new PluginError(PLUGIN_NAME, 'Missing options!');
     }
+
+    // extend options
+    var options = {
+        use_file_cache: true,
+        quiet: false,
+        partials: '.',
+        templates: '.',
+        env: {},
+        dot_template_settings: {},
+        meta_data_separator: /\r?\n\r?\n/
+    };
 
     Object.prototype.extend = function (obj) {
         for (var i in obj) {
@@ -25,70 +37,37 @@ module.exports = function (opts) {
         }
     };
 
+    options.extend(opts);
+
+    // init file cache
     var fileCache = {};
     var readFileCached = function(file) {
-        if(typeof(fileCache[file]) === 'undefined') {
+        if(typeof(fileCache[file]) === 'undefined' || !options.use_file_cache) {
             fileCache[file] = fs.readFileSync(file, 'utf8');
         }
 
         return fileCache[file];
     };
 
-    var options = {
-        partials: '.',
-        templates: '.',
-        env: {},
-        dot_template_settings: {},
-        meta_data_separator: /\r?\n\r?\n/
-    };
-
-    options.extend(opts);
-
-    //var options = _.extend({
-    //    partials: '.',
-    //    templates: '.',
-    //    env: {},
-    //    dot_template_settings: {},
-    //    meta_data_separator: /\r?\n\r?\n/
-    //}, opts);
-
-    var parse = parse_setup(options.meta_data_separator);
-
-    //var compile =  compilers_setup({
-    //    read_content: _.compose(parse.content, grunt.file.read),
-    //    compilers: [
-    //        require("zetzer/dot")({
-    //            template_settings: options.dot_template_settings
-    //        }),
-    //        require("zetzer/markdown")
-    //    ]
-    //});
-
-    //var process_file = new process_file_setup({
-    //    options: options,
-    //    compile: compile,
-    //    read_header: _.compose(parse.header, grunt.file.read),
-    //    find_closest_match: file.find_closest_match
-    //});
-
     function find_closest_match (folder, filename) {
-        //if (!grunt.file.isDir(folder)) grunt.fail.warn("The folder " + folder + " does not exist.");
-        //
+
+        //TODO Check if folder exists
+        //throw new PluginError(PLUGIN_NAME, 'Folder ' + folder + 'doesn't exist');
+
         var pattern = build_pattern(folder, filename);
 
+        //TODO Check for real filepath (maybe by pattern)
         //var filepath = grunt.file.expand(pattern);
-        //
-        //// Warn again if the resulting file doesn't exist
-        //if (!filepath.length) grunt.fail.warn("The file " + pattern + " cannot be found.");
 
-        //return filepath[0];
-        //gutil.log('find_closest_match folder: ' + folder);
-        //gutil.log('find_closest_match filename: ' + filename);
-        //gutil.log('find_closest_match pattern: ' + pattern);
+        //TODO Check if file exists
+        //throw new PluginError(PLUGIN_NAME, 'File ' + pattern + 'doesn't exist');
+
         return pattern;
     }
 
     function build_pattern (folder, filename) {
+        //TODO Replace this with node path functions
+
         var separator = "";
         if (folder) {
             separator = folder.length ? "/" : "";
@@ -101,11 +80,32 @@ module.exports = function (opts) {
         return filename.toString().match(/\.[0-9a-z]+$/i);
     }
 
-    //this.files.forEach(function (mapping) {
-    //    var result = process_file(mapping.src).toString();
-    //    grunt.file.write(mapping.dest, result);
-    //});
+    // setup zetzer parser
+    var parse = new ZetzerParse(options.meta_data_separator);
 
+    // setup zetzer compilers
+    var compile = new ZetzerCompilers({
+        read_content: function(input_file) { 
+            return parse.content(readFileCached(input_file)); 
+        },
+        compilers: [
+            require('zetzer/dot')({ template_settings: options.dot_template_settings }),
+            require('zetzer/markdown')
+        ]
+    });
+
+    // TODO Fix processing header data
+    // setup zetzer processor
+    var processFile = new ZetzerProcess({
+        options: options,
+        compile: compile,
+        find_closest_match: find_closest_match,
+        read_header: function(input_file) { 
+            return parse.header(readFileCached(input_file)); 
+        }
+    });
+
+    // iterate over files
 	return through.obj(function (file, enc, cb) {
 		if (file.isNull()) {
 			return cb(null, file);
@@ -117,35 +117,13 @@ module.exports = function (opts) {
         }
 
         if (file.isBuffer()) {
-            //gutil.log('file is buffer: ' + file.path);
-            //var prefixText = new Buffer('PREFIX TEXT - ');
-            //file.contents = Buffer.concat([prefixText, file.contents]);
-
-            //gutil.log('file');
-            //gutil.log(file.relative);
-            //gutil.log(file.contents);
-
-            var compile =  compilers_setup({
-                read_content: function(input_file) { return parse.content(readFileCached(input_file)); }, // _.compose(parse.content, fs.readFileSync),
-                compilers: [
-                    require('zetzer/dot')({
-                        template_settings: options.dot_template_settings
-                    }),
-                    require('zetzer/markdown')
-                ]
-            });
-
-            var process_file = new process_file_setup({
-                options: options,
-                compile: compile,
-                read_header: function(input_file) { return parse.header(readFileCached(input_file)); }, // _.compose(parse.header, fs.readFileSync),
-                find_closest_match: find_closest_match
-            });
-
-            console.log('Processing ' + file.relative);
-            var contents = process_file(file.relative).toString();
+            var contents = processFile(file.relative).toString();
             file.contents = new Buffer(contents);
-            //grunt.file.write(mapping.dest, result);
+
+            if(!options.quite) {
+                var filesize = getFileSize(Buffer.byteLength(contents));
+                gutil.log("Processed",gutil.colors.cyan(file.relative),":",gutil.colors.magenta(filesize));
+            }
         }
 
 		cb(null, file);
