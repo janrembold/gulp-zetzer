@@ -1,4 +1,4 @@
-# gulp-zetzer [![Build Status](https://travis-ci.org/<%= githubUsername %>/gulp-zetzer.svg?branch=master)](https://travis-ci.org/<%= githubUsername %>/gulp-zetzer)
+# gulp-zetzer
 
 > Gulp plugin for [Zetzer][zetzer] - static HTML page generator
 
