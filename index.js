@@ -5,6 +5,7 @@ var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
 var through = require('through2');
 var _ = require('underscore');
+var fs = require('fs');
 
 var parse_setup = require('zetzer/parse');
 var compilers_setup = require('zetzer/compilers');
@@ -98,7 +99,7 @@ module.exports = function (opts) {
             //gutil.log(file.contents);
 
             var compile =  compilers_setup({
-                read_content: function(){ return parse.content(file.contents.toString()); }, //_.compose(parse.content, file.contents),
+                read_content: function(input_file) { return parse.content(fs.readFileSync(input_file, 'utf8')); }, // _.compose(parse.content, fs.readFileSync),
                 compilers: [
                     require('zetzer/dot')({
                         template_settings: options.dot_template_settings
@@ -110,11 +111,11 @@ module.exports = function (opts) {
             var process_file = new process_file_setup({
                 options: options,
                 compile: compile,
-                read_header: function(){ return parse.header(file.contents.toString()); }, //_.compose(parse.header, file.contents),
+                read_header: function(input_file) { return parse.header(fs.readFileSync(input_file, 'utf8')); }, // _.compose(parse.header, fs.readFileSync),
                 find_closest_match: find_closest_match
             });
 
-            console.log('process = ' + file.relative);
+            console.log('Processing ' + file.relative);
             var contents = process_file(file.relative).toString();
             file.contents = new Buffer(contents);
             //grunt.file.write(mapping.dest, result);
