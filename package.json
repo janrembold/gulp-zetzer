@@ -1,13 +1,14 @@
 {
   "name": "gulp-zetzer",
-  "version": "0.0.0",
-  "description": "My <%= superb %> gulp plugin",
+  "version": "1.0.0",
+  "description": "Gulp plugin for Zetzer - static HTML page generator",
+  "homepage": "https://github.com/brainshave/zetzer",
   "license": "MIT",
   "repository": "janrembold/gulp-zetzer",
   "author": {
-    "name": "<%= name %>",
-    "email": "<%= email %>",
-    "url": "<%= humanizedWebsite %>"
+    "name": "Jan Rembold",
+    "email": "janrembold@gmail.com",
+    "url": "https://github.com/janrembold"
   },
   "engines": {
     "node": ">=0.10.0"
@@ -21,7 +22,9 @@
   "keywords": [
     "gulp",
     "zetzer",
-    "stencil"
+    "stencil",
+    "template",
+    "engine"
   ],
   "dependencies": {
     "filesize": "^3.1.3",

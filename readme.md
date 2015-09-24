@@ -1,7 +1,6 @@
 # gulp-zetzer [![Build Status](https://travis-ci.org/<%= githubUsername %>/gulp-zetzer.svg?branch=master)](https://travis-ci.org/<%= githubUsername %>/gulp-zetzer)
 
-> My <%= superb %> gulp plugin
-
+> Gulp plugin for [Zetzer][zetzer] - static HTML page generator
 
 ## Install
 
@@ -14,30 +13,41 @@ $ npm install --save-dev gulp-zetzer
 
 ```js
 var gulp = require('gulp');
-var <%= camelPluginName %> = require('gulp-zetzer');
+var zetzer = require('gulp-zetzer');
 
-gulp.task('default', function () {
-	return gulp.src('src/file.ext')
-		.pipe(<%= camelPluginName %>())
-		.pipe(gulp.dest('dist'));
+gulp.task('zetzer', function(){
+   gulp.src('./src/*.html', {base: './'})
+       .pipe(zetzer())
+       .pipe(gulp.dest('./build'));
 });
 ```
 
+More advanced options
+```js
+gulp.task('zetzer', function(){
+   gulp.src('./src/*.html', {base: './'})
+       .pipe(zetzer({
+		   partials: './src/partials',
+		   templates: './src/layouts',
+		   dot_template_settings: {
+			   strip: false
+		   },
+		   env: {
+			   env_string: 'Some plain string to use with it.document.env_string'
+		   }
+       }))
+       .pipe(gulp.dest('./build'));
+});
+```
 
-## API
+All possible options are listed in the main [Zetzer][zetzer] project.
 
-### <%= camelPluginName %>(options)
+Actual features should be implemented in [zetzer] as this is just
+Grunt "front-end".
 
-#### options
-
-##### foo
-
-Type: `boolean`  
-Default: `false`
-
-Lorem ipsum.
+[zetzer]: https://github.com/brainshave/zetzer
 
 
 ## License
-
-MIT © [<%= name %>](<%= website %>)
+* Author: Jan Rembold
+* License: MIT

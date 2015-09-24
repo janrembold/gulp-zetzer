@@ -3,6 +3,7 @@
 var PLUGIN_NAME = 'gulp-zetzer';
 
 var fs          = require('fs');
+var path        = require('path');
 var gutil       = require('gulp-util');
 var through     = require('through2');
 var getFileSize = require("filesize");
@@ -18,7 +19,7 @@ module.exports = function (opts) {
         throw new PluginError(PLUGIN_NAME, 'Missing options!');
     }
 
-    // extend options
+    // extend default options
     var options = {
         use_file_cache: true,
         quiet: false,
@@ -50,41 +51,22 @@ module.exports = function (opts) {
     };
 
     function find_closest_match (folder, filename) {
+        // join folder and filename
+        var filepath = path.join(folder, filename);
 
-        //TODO Check if folder exists
-        //throw new PluginError(PLUGIN_NAME, 'Folder ' + folder + 'doesn't exist');
-
-        var pattern = build_pattern(folder, filename);
-
-        //TODO Check for real filepath (maybe by pattern)
-        //var filepath = grunt.file.expand(pattern);
-
-        //TODO Check if file exists
-        //throw new PluginError(PLUGIN_NAME, 'File ' + pattern + 'doesn't exist');
-
-        return pattern;
-    }
-
-    function build_pattern (folder, filename) {
-        //TODO Replace this with node path functions
-
-        var separator = "";
-        if (folder) {
-            separator = folder.length ? "/" : "";
+        // check if file exists
+        if (!fs.existsSync(filepath)) {
+            throw new PluginError(PLUGIN_NAME, 'File ' + filepath + 'does not exist');
         }
-        var extension = has_extension(filename) ? "" : ".*";
-        return folder + separator + filename + extension;
-    }
 
-    function has_extension (filename) {
-        return filename.toString().match(/\.[0-9a-z]+$/i);
+        return filepath;
     }
 
     // setup zetzer parser
-    var parse = new ZetzerParse(options.meta_data_separator);
+    var parse = ZetzerParse(options.meta_data_separator);
 
     // setup zetzer compilers
-    var compile = new ZetzerCompilers({
+    var compile = ZetzerCompilers({
         read_content: function(input_file) { 
             return parse.content(readFileCached(input_file)); 
         },
@@ -94,9 +76,8 @@ module.exports = function (opts) {
         ]
     });
 
-    // TODO Fix processing header data
     // setup zetzer processor
-    var processFile = new ZetzerProcess({
+    var processFile = ZetzerProcess({
         options: options,
         compile: compile,
         find_closest_match: find_closest_match,
