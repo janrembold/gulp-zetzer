@@ -25,6 +25,15 @@ module.exports = function (opts) {
         }
     };
 
+    var fileCache = {};
+    var readFileCached = function(file) {
+        if(typeof(fileCache[file]) === 'undefined') {
+            fileCache[file] = fs.readFileSync(file, 'utf8');
+        }
+
+        return fileCache[file];
+    };
+
     var options = {
         partials: '.',
         templates: '.',
@@ -117,7 +126,7 @@ module.exports = function (opts) {
             //gutil.log(file.contents);
 
             var compile =  compilers_setup({
-                read_content: function(input_file) { return parse.content(fs.readFileSync(input_file, 'utf8')); }, // _.compose(parse.content, fs.readFileSync),
+                read_content: function(input_file) { return parse.content(readFileCached(input_file)); }, // _.compose(parse.content, fs.readFileSync),
                 compilers: [
                     require('zetzer/dot')({
                         template_settings: options.dot_template_settings
@@ -129,7 +138,7 @@ module.exports = function (opts) {
             var process_file = new process_file_setup({
                 options: options,
                 compile: compile,
-                read_header: function(input_file) { return parse.header(fs.readFileSync(input_file, 'utf8')); }, // _.compose(parse.header, fs.readFileSync),
+                read_header: function(input_file) { return parse.header(readFileCached(input_file)); }, // _.compose(parse.header, fs.readFileSync),
                 find_closest_match: find_closest_match
             });
 
