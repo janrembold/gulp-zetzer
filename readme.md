@@ -16,7 +16,7 @@ var gulp = require('gulp');
 var zetzer = require('gulp-zetzer');
 
 gulp.task('zetzer', function(){
-   gulp.src('./src/*.html', {base: './'})
+   gulp.src('./src/*.html')
        .pipe(zetzer())
        .pipe(gulp.dest('./build'));
 });
@@ -25,7 +25,7 @@ gulp.task('zetzer', function(){
 More advanced options
 ```js
 gulp.task('zetzer', function(){
-   gulp.src('./src/*.html', {base: './'})
+   gulp.src('./src/*.html')
        .pipe(zetzer({
            quite: true,
 		   partials: './src/partials',
