@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var zetzer = require('./../index.js');
 
 gulp.task('default', function(){
-   gulp.src('./src/*.html', {base: './'})
+   gulp.src('./src/*.html')
        .pipe(zetzer({
 		   partials: './src/partials',
 		   templates: './src/layouts',

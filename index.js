@@ -56,7 +56,7 @@ module.exports = function (opts) {
 
         // check if file exists
         if (!fs.existsSync(filepath)) {
-            throw new PluginError(PLUGIN_NAME, 'File ' + filepath + 'does not exist');
+            throw new PluginError(PLUGIN_NAME, 'File ' + filepath + ' does not exist');
         }
 
         return filepath;
@@ -98,7 +98,7 @@ module.exports = function (opts) {
         }
 
         if (file.isBuffer()) {
-            var contents = processFile(file.relative).toString();
+            var contents = processFile(path.relative(file.cwd, file.path)).toString();
             file.contents = new Buffer(contents);
 
             if(!options.quite) {
