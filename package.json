@@ -1,6 +1,6 @@
 {
   "name": "gulp-zetzer",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Gulp plugin for Zetzer - a static HTML page generator",
   "homepage": "https://github.com/brainshave/zetzer",
   "license": "MIT",
@@ -27,11 +27,11 @@
     "engine"
   ],
   "dependencies": {
-    "filesize": "^3.1.3",
     "gulp": "^3.9.0",
     "gulp-util": "^3.0.4",
     "through2": "^0.6.5",
     "underscore": "^1.8.3",
+    "lodash": "^3.10.1",
     "zetzer": "^2.0.0"
   },
   "devDependencies": {
