@@ -27,7 +27,6 @@ More advanced options
 gulp.task('zetzer', function(){
    gulp.src('./src/*.html')
        .pipe(zetzer({
-           quite: true,
 		   partials: './src/partials',
 		   templates: './src/layouts',
 		   dot_template_settings: {
@@ -42,11 +41,6 @@ gulp.task('zetzer', function(){
 ```
 
 All possible options are listed in the main [zetzer] project.
-
-The only gulp-zetzer specific option is 'quite' that defaults to 'false'. 
-Setting this option to 'true' removes the processed file information from the command line.  
-
-
 New features should be implemented in [zetzer]. This is just a Gulp "front-end".
 [zetzer]: https://github.com/brainshave/zetzer
 
