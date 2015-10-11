@@ -88,8 +88,19 @@ module.exports = function (opts) {
         }
 
         if (file.isBuffer()) {
-            var contents = processFile(path.relative(file.cwd, file.path)).toString();
-            file.contents = new Buffer(contents);
+            try {
+
+                var contents = processFile(path.relative(file.cwd, file.path)).toString();
+                file.contents = new Buffer(contents);
+
+            } catch(error) {
+                error.messageFormatted = gutil.colors.underline('Template: '+path.relative(file.cwd, file.path)) + '\n';
+                error.messageFormatted += gutil.colors.red(error.message);
+
+                process.stderr.write(error.messageFormatted + '\n');
+                this.emit('error', new gutil.PluginError(PLUGIN_NAME, error));
+                return cb();
+            }
         }
 
         cb(null, file);
